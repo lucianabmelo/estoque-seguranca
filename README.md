@@ -1,28 +1,81 @@
-ESTOCAÍ — PROJETO FRONT-END
+ESTOCAÍ — Sistema de Controle de Estoque
 
-Como executar:
-1. Extraia a pasta.
-2. Abra o arquivo index.html no navegador.
-3. É necessário acesso à internet apenas para carregar o Tailwind CSS via CDN.
+Sistema web acadêmico desenvolvido para a disciplina de Segurança em Sistemas de Informação.
+O ESTOCAÍ é um sistema de gerenciamento de estoque voltado para produtos de tecnologia, desenvolvido com front-end e back-end, aplicando conceitos de autenticação, validação de dados, controle de acesso, auditoria, proteção de rotas e princípios de segurança da informação.
+O projeto também aplica conceitos da Tríade CID — Confidencialidade, Integridade e Disponibilidade no desenvolvimento do back-end.
+Tecnologias
+•	HTML5
+•	JavaScript
+•	Tailwind CSS
+•	Node.js
+•	Express
+•	Middleware
+•	API REST
+•	Git
+•	GitHub
+•	Visual Studio Code
+•	Vercel
 
-Login de demonstração:
-Matrícula: func123
-Senha: 2026
+Funcionalidades do projeto:
+Autenticação:
+•	Login de funcionário por matrícula e senha.
+•	Campos obrigatórios.
+•	Senha mascarada por padrão.
+•	Limite de caracteres nos campos.
+•	Validação das credenciais.
+•	Controle de sessão/acesso do usuário.
+•	Timeout de inatividade de 2 minutos.
+•	Confirmação antes do logout.
+•	Proteção de acesso através do back-end.
 
-Recursos implementados:
-- Limite de caracteres em login, senha e campos do produto.
-- Campos obrigatórios com required.
-- Máscaras/sanitização para SKU e GTIN/EAN.
-- Tipos de input adequados: password, number, search e inputmode numeric.
-- Senha mascarada por padrão.
-- Timeout de inatividade de 5 minutos.
-- Popups de confirmação para exclusão e saída.
-- Botões desabilitados durante login, cadastro/edição e exclusão.
-- SKU, GTIN/EAN, descrição e unidade de medida.
-- Logs de auditoria com usuário, data, hora, ação, produto e detalhes.
-- Tabela de produtos na ordem: categoria / marca / nome / SKU / quantidade.
-- 4 produtos iniciais.
-- Categorias permitidas: Gabinete, Monitor, Mouse, Processador e Teclado.
+Controle de estoque
+O sistema permite:
+•	Cadastro de produtos.
+•	Listagem de produtos.
+•	Pesquisa de produtos.
+•	Atualização de produtos.
+•	Exclusão de produtos.
+•	Controle da quantidade em estoque.
+•	Confirmação antes da exclusão.
+•	Validação dos dados antes das operações.
+A tabela de produtos apresenta as informações na seguinte ordem:
+Categoria / Marca / Nome / SKU / Quantidade
 
-IMPORTANTE:
-Este é um projeto exclusivamente front-end. As validações melhoram UX e reduzem entradas inválidas, mas autenticação, proteção real contra ataques e integridade de logs exigem back-end, banco de dados, HTTPS e controles de autorização no servidor.
+
+Dados dos produtos
+Os produtos possuem informações como:
+•	Nome
+•	Marca
+•	Categoria
+•	SKU
+•	GTIN/EAN
+•	Descrição
+•	Unidade de medida
+•	Quantidade
+
+Categorias permitidas:
+•	Gabinete
+•	Monitor
+•	Mouse
+•	Processador
+•	Teclado
+
+Validação de dados
+•	Campos obrigatórios com “required”.
+•	Limites máximos de caracteres.
+•	Inputs adequados de entrada.
+•	Máscaras para determinados campos.
+•	Validação de SKU.
+•	Validação de GTIN/EAN (código de barras).
+•	Validação de quantidade.
+•	Bloqueio de operações quando os dados são inválidos.
+
+Back-end
+O sistema possui uma estrutura de back-end responsável pelo processamento das requisições e aplicação das regras de segurança.
+Foram implementados:
+•	Servidor utilizando Node.js.
+•	Rotas específicas para as operações do sistema.
+•	Middleware para validação e controle das requisições.
+•	Tratamento dos dados recebidos pelo servidor.
+•	Proteção das operações sensíveis.
+•	Tratamento de erros.
