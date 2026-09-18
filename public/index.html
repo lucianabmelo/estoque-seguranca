@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Estocaí - Controle de estoque seguro!">
+  <title>Estocaí — Controle de Estoque Seguro</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="js/produtos.js" defer></script>
+  <script src="js/auth.js" defer></script>
+  <script src="js/app.js" defer></script>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen">
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
+  <!-- LOGIN -->
+  <main id="login" class="min-h-screen grid lg:grid-cols-2">
+    <section class="login-cover p-10 lg:p-16 flex flex-col justify-between">
+      <a class="brand text-2xl font-bold" href="#" aria-label="Estocaí">▦ <span>Estocaí<span class="brand-dot">.</span></span></a>
+      <div>
+        <span class="eyebrow">MAIS CONTROLE, MAIS SEGURANÇA.</span>
+        <h1 class="text-5xl lg:text-6xl font-bold leading-tight mt-4">Seu estoque.<br>Ainda mais seguro.</h1>
+        <p class="text-lg mt-5 max-w-lg text-slate-600">Cadastre, consulte e atualize seus produtos com rastreabilidade e segurança.</p>
+        <div class="illustration mt-10" aria-hidden="true">
+          <div class="box">▦</div><div class="box box-up">▤</div><div class="box">✓</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="flex items-center justify-center p-8 bg-white">
+      <form id="login-form" class="w-full max-w-md" novalidate>
+        <span class="eyebrow text-emerald-700">BEM-VINDO AO ESTOCAÍ.</span>
+        <h2 class="text-3xl font-semibold mt-3 mb-2">Acesso ao sistema</h2>
+        <p class="text-slate-500 mb-8">Use seu e-mail da matrícula e senha.</p>
+
+    <label for="usuario">E-mail do funcionário: *</label>
+
+<input id="usuario" name="usuario" type="email" autocomplete="username" required maxlength="80" placeholder="Ex: func000@gmail.com" aria-describedby="usuario-help">
+<p id="usuario-help" class="field-help"></p>
+        
+<input id="senha" name="senha" type="password" autocomplete="current-password" required minlength="4" maxlength="20" placeholder="Password:">
+          <button id="toggle-password" type="button" class="show-password" aria-label="Mostrar senha">Mostrar</button>
+      </div>
+
+        <p id="login-error" class="text-red-600 text-sm min-h-5 mb-3" role="alert"></p>
+        <button id="login-button" class="btn-primary w-full" type="submit">Acessar <span aria-hidden="true">→</span></button>
+
+        <p class="text-xs text-slate-400 mt-6">A sessão será encerrada após 2 minutos de inatividade.</p>
+                
+      </form>
+    </section>
+  </main>
+
+  <!-- APLICAÇÃO -->
+  <div id="app" class="hidden min-h-screen lg:grid lg:grid-cols-[260px_1fr]">
+    <aside class="sidebar">
+      <div>
+        <div class="brand text-xl">▦ <span>Estocaí<span class="brand-dot">.</span></span></div>
+        <p class="sidebar-label">Espaço de Controle</p>
+        <nav aria-label="Menu principal" class="space-y-1">
+          <button data-page="dashboard" class="nav-button">◫ <span>Dashboard</span></button>
+          <button data-page="cadastro" class="nav-button">⊕ <span>Cadastrar produto</span></button>
+          <button data-page="produtos" class="nav-button">▦ <span>Produtos</span></button>
+          <button data-page="auditoria" class="nav-button">≡ <span>Auditoria</span></button>
+        </nav>
+      </div>
+      <div class="sidebar-bottom">
+        <div class="local-note"><span class="live-dot"></span> Armazenamento local<p>Dados salvos neste navegador.</p></div>
+        <button id="logout" class="nav-button">↪ <span>Sair do sistema</span></button>
+      </div>
+    </aside>
+
+    <div class="workspace min-w-0">
+      <header class="topbar">
+        <div><span class="font-semibold">Controle de Estoque</span><span id="session-status" class="session-badge">Sessão ativa</span></div>
+        <div class="flex items-center gap-3"><span class="text-sm text-slate-500">Funcionário: <b id="current-user" class="text-slate-700">func123</b></span><span class="avatar">F</span></div>
+      </header>
+
+      <main class="content">
+        <!-- DASHBOARD -->
+        <section id="dashboard" class="page">
+          <div class="page-heading">
+            <div><p class="eyebrow">VISÃO GERAL</p><h1>Dashboard</h1><p>Acompanhe a situação atual do estoque.</p></div>
+            <button class="btn-primary" data-page="cadastro">+ Cadastrar produto</button>
+          </div>
+          <div id="metrics" class="metrics"></div>
+          <div class="painel">
+            <div class="painel-heading"><div><h2>Produtos cadastrados</h2><p>Prévia do estoque atual.</p></div><button data-page="produtos" class="link-button">Ver todos →</button></div>
+            <div id="recent-table" class="table-scroll"></div>
+          </div>
+        </section>
+
+        <!-- PRODUTOS -->
+        <section id="produtos" class="page hidden">
+          <div class="page-heading">
+            <div><p class="eyebrow">CATÁLOGO</p><h1>Produtos</h1><p>Consulte, edite ou exclua itens do estoque.</p></div>
+            <button class="btn-primary" data-page="cadastro">+ Cadastrar produto</button>
+          </div>
+          <div class="painel">
+            <div class="filters">
+              <div class="flex-1"><label for="search">Pesquisar produtos</label><input id="search" maxlength="50" type="search" placeholder="Buscar por categoria, marca, nome ou SKU"></div>
+              <div><label for="category-filter">Categoria</label><select id="category-filter"></select></div>
+            </div>
+            <p id="results-count" class="px-6 pb-3 text-sm text-slate-500" aria-live="polite"></p>
+            <div id="products-table" class="table-scroll"></div>
+          </div>
+        </section>
+
+        <!-- CADASTRO -->
+        <section id="cadastro" class="page hidden">
+          <div class="page-heading">
+            <div><p class="eyebrow">CATÁLOGO</p><h1 id="form-title">Cadastrar produto</h1><p id="form-subtitle">Preencha os dados obrigatórios do item.</p></div>
+            <button class="btn-secondary" data-page="produtos">← Voltar aos produtos</button>
+          </div>
+
+          <form id="product-form" class="painel product-form" novalidate>
+            <div class="painel-heading"><div><h2>Informações do produto</h2><p>Os campos com * são obrigatórios.</p></div><span class="text-emerald-700 text-2xl" aria-hidden="true">▦</span></div>
+            <div class="form-grid">
+              <div><label for="categoria">Categoria *</label><select id="categoria" name="categoria" required></select></div>
+              <div><label for="marca">Marca *</label><input id="marca" name="marca" type="text" required minlength="2" maxlength="40" placeholder="Ex.: Logitech"></div>
+              <div class="full"><label for="nome">Nome do produto *</label><input id="nome" name="nome" type="text" required minlength="2" maxlength="80" placeholder="Ex.: Mouse G203 Lightsync"></div>
+              <div><label for="sku">Código do item / SKU *</label><input id="sku" name="sku" type="text" required maxlength="20" pattern="[A-Z0-9_-]{3,20}" placeholder="Ex.: MOU-LOG-001" aria-describedby="sku-help"><p id="sku-help" class="field-help">3–20 caracteres. Apenas letras maiúsculas, números, hífen e _.</p></div>
+              <div><label for="quantidade">Quantidade *</label><input id="quantidade" name="quantidade" type="number" min="0" max="99999" step="1" required placeholder="0"></div>
+              <div><label for="gtin">Código de barras (GTIN/EAN) *</label><input id="gtin" name="gtin" type="text" inputmode="numeric" required minlength="8" maxlength="14" pattern="[0-9]{8,14}" placeholder="Ex.: 7891234567890" aria-describedby="gtin-help"><p id="gtin-help" class="field-help">Somente números, entre 8 e 14 dígitos.</p></div>
+              <div><label for="unidade">Unidade de medida *</label><select id="unidade" name="unidade" required><option value="">Selecione</option><option value="UN">Unidade (UN)</option><option value="CX">Caixa (CX)</option></select></div>
+              <div class="full"><label for="descricao">Descrição do produto *</label><textarea id="descricao" name="descricao" rows="4" required minlength="5" maxlength="300" placeholder="Descreva as principais características do produto"></textarea><div class="counter"><span id="descricao-count">0</span>/300</div></div>
+              <p id="form-error" class="full text-red-600 text-sm min-h-5" role="alert"></p>
+            </div>
+            <div class="form-footer"><button type="button" data-page="produtos" class="btn-secondary">Cancelar</button><button type="submit" id="save-product" class="btn-primary">Cadastrar produto</button></div>
+          </form>
+        </section>
+
+        <!-- AUDITORIA -->
+        <section id="auditoria" class="page hidden">
+          <div class="page-heading"><div><p class="eyebrow">RASTREABILIDADE</p><h1>Logs de auditoria</h1><p>Registro de inclusões, alterações e exclusões feitas no estoque.</p></div><button id="clear-logs" class="btn-secondary">Limpar logs</button></div>
+          <div class="panel"><div id="audit-table" class="table-scroll"></div></div>
+        </section>
+
+        <footer>Estocaí · Gestão de estoque <span>Projeto demonstrativo front-end.</span></footer>
+      </main>
+    </div>
+  </div>
+
+  <!-- MODAIS DE CONFIRMAÇÃO -->
+  <dialog id="delete-dialog" class="modal">
+    <form method="dialog" class="modal-card">
+      <span class="text-red-500 text-3xl" aria-hidden="true">⊗</span>
+      <h2 class="text-xl font-semibold mt-3">Excluir produto?</h2>
+      <p class="text-slate-500 mt-2">Esta ação remove o item do estoque e será registrada no log de auditoria.</p>
+      <p id="delete-name" class="font-medium mt-2"></p>
+      <div class="flex justify-end gap-3 mt-6"><button class="btn-secondary" value="cancel">Cancelar</button><button id="confirm-delete" class="btn-danger" value="confirm">Excluir produto</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="logout-dialog" class="modal">
+    <form method="dialog" class="modal-card">
+      <span class="text-amber-500 text-3xl" aria-hidden="true">↪</span>
+      <h2 class="text-xl font-semibold mt-3">Encerrar sessão?</h2>
+      <p class="text-slate-500 mt-2">Será preciso informar e-mail e senha novamente.</p>
+      <div class="flex justify-end gap-3 mt-6"><button class="btn-secondary" value="cancel">Cancelar</button><button class="btn-primary" value="confirm">Sair</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="timeout-dialog" class="modal">
+    <form method="dialog" class="modal-card">
+      <span class="text-amber-500 text-3xl" aria-hidden="true">⏱</span>
+      <h2 class="text-xl font-semibold mt-3">Sessão expirada</h2>
+      <p class="text-slate-500 mt-2">A sessão foi encerrada após 2 minutos sem atividade.</p>
+      <div class="flex justify-end mt-6"><button class="btn-primary" value="ok">Voltar ao login</button></div>
+    </form>
+  </dialog>
+
+  <!-- BLOQUEIO AUTOMÁTICO DE SEGURANÇA -->
+<div
+  id="security-lock"
+  class="security-lock hidden"
+  role="dialog"
+  aria-modal="true"
+>
+
+  <div class="security-lock-card">
+
+    <div class="security-lock-icon">🔒</div>
+
+    <h2>Sistema bloqueado!</h2>
+
+    <p>
+      Por segurança, o sistema foi bloqueado
+      porque a aplicação deixou de estar visível.
+    </p>
+
+    <div class="lock-user-info">
+      Funcionário:
+      <strong id="lock-user">func01@gmail.com</strong>
+    </div>
+
+    <label for="unlock-password">
+      Digite a senha para continuar:
+    </label>
+
+    <input
+      id="unlock-password"
+      type="password"
+      maxlength="20"
+      autocomplete="current-password"
+      placeholder="Digite sua senha"
+    >
+
+    <p
+      id="unlock-error"
+      class="text-red-600 text-sm min-h-5 mt-2"
+      role="alert"
+    ></p>
+
+    <button
+      id="unlock-button"
+      type="button"
+      class="btn-primary w-full mt-4"
+    >
+      🔓 Desbloquear sistema
+    </button>
+
+  </div>
+</div>
+
+</body>
+</html>
